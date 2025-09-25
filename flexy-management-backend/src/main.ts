@@ -10,6 +10,12 @@ async function bootstrap() {
     whitelist: true,
     transform: true,
   }));
+
+  app.enableCors({
+      origin: 'http://localhost:3000', 
+      methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+      credentials: true,
+  });
   
   // Swagger Config
   const config = new DocumentBuilder()
