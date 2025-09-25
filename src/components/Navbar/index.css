@@ -1,0 +1,19 @@
+.main-nav {
+  background-color: #282c34;
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.main-nav a {
+  color: #61dafb;
+  text-decoration: none;
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.main-nav a:hover,
+.main-nav a.active {
+  text-decoration: underline;
+}

@@ -1,0 +1,53 @@
+.flexy-form {
+  flex: 1;
+  min-width: 300px;
+  max-width: 500px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.flexy-form h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.flexy-form label {
+  font-weight: bold;
+  color: #333;
+}
+
+.flexy-form input,
+.flexy-form textarea,
+.flexy-form select {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box; /* Important for consistent sizing */
+}
+
+.dimension-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.submit-btn {
+  padding: 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #007bff;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}

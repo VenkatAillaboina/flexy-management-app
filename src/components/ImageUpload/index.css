@@ -1,0 +1,15 @@
+.image-upload-container {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.image-preview {
+  margin-top: 10px;
+}
+
+.image-preview img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+}

@@ -1,23 +1,41 @@
-import logo from './logo.svg';
+import { useState } from 'react';
+import { Routes, Route } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Home from './components/Home';
+import NotesList from './components/NotesList';
+import NoteDetails from './components/NoteDetails';
 import './App.css';
 
 function App() {
+  const [flexys, setFlexys] = useState([]);
+
+  const addFlexy = (flexy) => {
+    setFlexys([...flexys, { ...flexy, id: Date.now() }]);
+    alert('Flexy added successfully!');
+  };
+
+  const updateFlexy = (updatedFlexy) => {
+    setFlexys(
+      flexys.map((flexy) =>
+        flexy.id === updatedFlexy.id ? updatedFlexy : flexy
+      )
+    );
+    alert('Flexy updated successfully!');
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Navbar />
+      <main>
+        <Routes>
+          <Route path="/" element={<Home addFlexy={addFlexy} />} />
+          <Route path="/notes" element={<NotesList flexys={flexys} />} />
+          <Route
+            path="/notes/:id"
+            element={<NoteDetails flexys={flexys} updateFlexy={updateFlexy} />}
+          />
+        </Routes>
+      </main>
     </div>
   );
 }
