@@ -7,12 +7,11 @@ const ImageUpload = ({ onImageUpload }) => {
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPreview(reader.result);
-        onImageUpload(reader.result); 
-      };
-      reader.readAsDataURL(file);
+      // Pass the raw file object to the parent form
+      onImageUpload(file); 
+      
+      // Generate a preview URL from the file object
+      setPreview(URL.createObjectURL(file));
     }
   };
 
@@ -21,7 +20,7 @@ const ImageUpload = ({ onImageUpload }) => {
       <input
         type="file"
         accept="image/*"
-        capture="environment" // Prioritizes camera on mobile
+        capture="environment"
         onChange={handleImageChange}
       />
       {preview && (

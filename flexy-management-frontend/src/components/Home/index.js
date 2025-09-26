@@ -9,11 +9,17 @@ const fallbackCenter = {
   lng: 79.5941
 };
 
-const Home = ({ addFlexy }) => {
+const Home = () => {
   const [currentCenter, setCurrentCenter] = useState(null);
   const [markerPosition, setMarkerPosition] = useState(null);
 
   useEffect(() => {
+    const geoOptions = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
+    };
+
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
@@ -26,7 +32,8 @@ const Home = ({ addFlexy }) => {
           console.error("Could not get location. Defaulting to fallback.");
           setCurrentCenter(fallbackCenter);
           setMarkerPosition(fallbackCenter);
-        }
+        },
+        geoOptions
       );
     } else {
       console.error("Geolocation is not supported by this browser.");
@@ -47,12 +54,12 @@ const Home = ({ addFlexy }) => {
 
   return (
     <div className="home-container">
-      <MapComponent 
-        onMapClick={handleMapClick} 
-        markerPosition={markerPosition} 
-        center={currentCenter} // Use the new dynamic center prop
+      <MapComponent
+        onMapClick={handleMapClick}
+        markerPosition={markerPosition}
+        center={currentCenter}
       />
-      <FlexyForm onFormSubmit={addFlexy} pinnedLocation={markerPosition} />
+      <FlexyForm pinnedLocation={markerPosition} />
     </div>
   );
 };
