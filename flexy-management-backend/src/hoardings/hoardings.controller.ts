@@ -15,10 +15,10 @@ export class HoardingsController {
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Create a new hoarding record' })
-  @ApiConsumes('multipart/form-data') // Specify the content type
+  @ApiConsumes('multipart/form-data') 
   @ApiBody({
     description: 'Data for the new hoarding, including an image upload',
-    type: CreateHoardingDto, // Link to the DTO for the body fields
+    type: CreateHoardingDto, 
   })
   @ApiResponse({ status: 201, description: 'The hoarding was created successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request. Validation failed.' })
@@ -77,6 +77,8 @@ export class HoardingsController {
   }
 
   @Patch(':id')
+  @UseInterceptors(FileInterceptor('image')) 
+  @ApiConsumes('multipart/form-data') 
   @ApiOperation({ summary: 'Update a hoarding record by ID' })
   @ApiResponse({
     status: 200,
@@ -86,12 +88,22 @@ export class HoardingsController {
   async update(
     @Param('id') id: string,
     @Body() updateHoardingDto: UpdateHoardingDto,
+    @UploadedFile(
+    new ParseFilePipe({
+      validators: [
+        new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }), // 4MB
+        new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+      ],
+      fileIsRequired: false, // This makes the image upload optional
+    }),
+  )
+  image?: Express.Multer.File,
   ): Promise<{
     statusCode: number;
     message: string;
     data: Hoarding;
   }> {
-    const data = await this.hoardingsService.update(id, updateHoardingDto);
+    const data = await this.hoardingsService.update(id, updateHoardingDto, image);
     return {
       statusCode: HttpStatus.OK,
       message: 'Hoarding updated successfully',

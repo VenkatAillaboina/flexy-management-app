@@ -1,4 +1,3 @@
-// src/hoardings/dto/create-hoarding.dto.ts
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { IsString, IsNotEmpty, IsNumber, IsArray, IsOptional, ArrayMinSize, ArrayMaxSize } from 'class-validator';
@@ -28,13 +27,13 @@ export class CreateHoardingDto {
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value))
-  width: number;
+  width?: number;
 
   @ApiProperty({ example: 20, description: 'Height of the hoarding in feet.' })
   @IsNumber()
   @IsOptional()
   @Transform(({ value }) => Number(value))
-  height: number;
+  height?: number;
   
   @ApiProperty({ example: 19990, description: 'Price of the hoarding.' })
   @IsNumber()
@@ -50,7 +49,13 @@ export class CreateHoardingDto {
   @ApiProperty({ example:'+91 1234567890', description: 'Contact Info of the Owner.' })
   @IsString()
   @IsOptional()
-  ownerContact: string;
+  ownerContactNumber?: string;
+
+  @ApiProperty({ example:'Ravi Babu', description: 'Name of the Owner.' })
+  @IsString()
+  @IsOptional()
+  ownerName?: string;
+  
 
   // We'll handle image upload separately, so the URL will be set by the service
   // For now, we don't need it in the initial DTO from the client.

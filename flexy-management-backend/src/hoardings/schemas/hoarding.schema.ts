@@ -35,13 +35,13 @@ export class Hoarding extends Document {
   price: number;
 
   @Prop()
-  ownerContactNumber?: string;
+  ownerContactNumber: string;
 
   @Prop()
-  ownerName?: string;
+  ownerName: string;
 
   @Prop()
-  imageUrl: string; // We'll store the URL of the uploaded image
+  imageUrl: string; 
 
   @Prop()
   notes?: string;
