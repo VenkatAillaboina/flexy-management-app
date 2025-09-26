@@ -24,6 +24,19 @@ const NotesList = () => {
     fetchFlexys();
   }, []);
 
+  const handleDelete = async (id) => {
+    if (window.confirm('Are you sure you want to delete this flexy?')) {
+      try {
+        await axios.delete(`${API_URL}/hoardings/${id}`);
+        setFlexys(flexys.filter(flexy => flexy._id !== id));
+        alert('Flexy deleted successfully!');
+      } catch (error) {
+        console.error("Failed to delete flexy:", error);
+        alert('Failed to delete flexy. Please try again.');
+      }
+    }
+  };
+
   if (loading) {
     return <Loader />;
   }
@@ -48,7 +61,10 @@ const NotesList = () => {
               <h3>{flexy.name}</h3>
               <p><strong>Address:</strong> {flexy.address}</p>
               <p><strong>Status:</strong> {flexy.status}</p>
-              <Link to={`/notes/${flexy._id}`} className="details-link">View / Edit</Link>
+              <div className="card-actions">
+                <Link to={`/notes/${flexy._id}`} className="details-link">View / Edit</Link>
+                <button onClick={() => handleDelete(flexy._id)} className="delete-btn">Delete</button>
+              </div>
             </div>
           </div>
         ))}

@@ -6,7 +6,7 @@ import './index.css';
 const MapComponent = ({ onMapClick, markerPosition, center }) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: ""
+    googleMapsApiKey: "AIzaSyBYoE-nQMz-mzdTdKjyJAVv_F3G5eIq5sM"
   });
 
   const [map, setMap] = useState(null);

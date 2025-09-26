@@ -27,22 +27,44 @@
 
 .note-card-content {
   padding: 15px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1; /* Allows the content to fill the card */
 }
 
 .note-card-content h3 {
   margin-top: 0;
 }
 
-.details-link {
-  display: inline-block;
-  margin-top: 10px;
+.card-actions {
+  margin-top: auto; /* Pushes the actions to the bottom of the card */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.details-link, .delete-btn {
   padding: 8px 12px;
-  background-color: #007bff;
-  color: white;
   text-decoration: none;
   border-radius: 4px;
+  border: none;
+  cursor: pointer;
+}
+
+.details-link {
+  background-color: #007bff;
+  color: white;
 }
 
 .details-link:hover {
   background-color: #0056b3;
+}
+
+.delete-btn {
+  background-color: #dc3545;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #c82333;
 }

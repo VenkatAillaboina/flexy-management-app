@@ -24,7 +24,10 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
 
   useEffect(() => {
     if (existingFlexy) {
-      setFormData(existingFlexy);
+      setFormData({
+        ...existingFlexy,
+        image: null // We don't want to re-upload the image unless a new one is selected
+      });
     }
   }, [existingFlexy]);
 
@@ -39,8 +42,6 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Flexy Name is required.';
-    if (!formData.address.trim()) newErrors.address = 'Address is required.';
     if (!pinnedLocation) newErrors.location = 'A location must be pinned on the map.';
     if (!formData.image && !existingFlexy) newErrors.image = 'An image is required.';
     
@@ -50,16 +51,28 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
 
   const addFlexy = async (submissionData) => {
     try {
-      const response = await axios.post(`${API_URL}/hoardings`, submissionData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        },
+      await axios.post(`${API_URL}/hoardings`, submissionData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
       });
       alert('Flexy added successfully!');
-      navigate('/notes'); // Redirect to the notes list after successful submission
+      navigate('/notes');
     } catch (error) {
       console.error('Error adding flexy:', error.response?.data || error.message);
       alert(`Error: ${error.response?.data?.message || 'Could not add flexy.'}`);
+      throw error;
+    }
+  };
+  
+  const updateFlexy = async (submissionData) => {
+    try {
+      await axios.patch(`${API_URL}/hoardings/${existingFlexy._id}`, submissionData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      alert('Flexy updated successfully!');
+      navigate('/notes');
+    } catch (error) {
+      console.error('Error updating flexy:', error.response?.data || error.message);
+      alert(`Error: ${error.response?.data?.message || 'Could not update flexy.'}`);
       throw error;
     }
   };
@@ -74,40 +87,25 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     setIsSubmitting(true);
     
     const submissionData = new FormData();
-    submissionData.append('name', formData.name);
-    submissionData.append('address', formData.address);
-    submissionData.append('status', formData.status);
-    submissionData.append('ownerContact', formData.ownerContact);
-    submissionData.append('notes', formData.notes);
-    
-    if (formData.width) submissionData.append('width', formData.width);
-    if (formData.height) submissionData.append('height', formData.height);
-    if (formData.price) submissionData.append('price', formData.price);
+    Object.keys(formData).forEach(key => {
+        if (key === 'image' && formData.image) {
+            submissionData.append('image', formData.image);
+        } else if (key !== 'image' && formData[key]) {
+             submissionData.append(key, formData[key]);
+        }
+    });
 
     if (pinnedLocation) {
-      const coordinates = [pinnedLocation.lng, pinnedLocation.lat];
-      submissionData.append('coordinates', coordinates.join(','));
+        submissionData.append('coordinates', [pinnedLocation.lng, pinnedLocation.lat].join(','));
     }
 
-    if (formData.image) {
-      submissionData.append('image', formData.image);
-    }
 
     try {
       if (existingFlexy) {
-        // Here you would call an update function, e.g., updateFlexy(submissionData)
-        // For now, it will still call addFlexy for demonstration
-        await addFlexy(submissionData);
+        await updateFlexy(submissionData);
       } else {
         await addFlexy(submissionData);
       }
-      
-      setFormData({
-        name: '', address: '', width: '', height: '',
-        price: '', status: 'Available', ownerContact: '',
-        notes: '', image: null,
-      });
-
     } catch (error) {
       console.error("Submission failed:", error);
     } finally {
@@ -120,8 +118,17 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
       <h2>{existingFlexy ? 'Edit Flexy Details' : 'Add New Flexy'}</h2>
       
       <div className="form-group">
+        <label>Upload Picture</label>
+        <ImageUpload
+          onImageUpload={handleImageUpload}
+          existingImageUrl={existingFlexy ? existingFlexy.imageUrl : null}
+        />
+        {errors.image && <p className="error-text">{errors.image}</p>}
+      </div>
+      
+      <div className="form-group">
         <label>Flexy Name / Title</label>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
+        <input type="text" name="name" value={formData.name} onChange={handleChange} />
         {errors.name && <p className="error-text">{errors.name}</p>}
       </div>
 
@@ -169,12 +176,6 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
       <div className="form-group">
         <label>Owner / Agency Contact</label>
         <input type="text" name="ownerContact" value={formData.ownerContact} onChange={handleChange} />
-      </div>
-      
-      <div className="form-group">
-        <label>Upload Picture</label>
-        <ImageUpload onImageUpload={handleImageUpload} />
-        {errors.image && <p className="error-text">{errors.image}</p>}
       </div>
       
       <div className="form-group">

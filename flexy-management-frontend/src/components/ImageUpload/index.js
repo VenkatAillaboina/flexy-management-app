@@ -1,16 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './index.css';
 
-const ImageUpload = ({ onImageUpload }) => {
+const ImageUpload = ({ onImageUpload, existingImageUrl }) => {
   const [preview, setPreview] = useState(null);
+
+  useEffect(() => {
+    if (existingImageUrl) {
+      setPreview(existingImageUrl);
+    }
+  }, [existingImageUrl]);
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // Pass the raw file object to the parent form
       onImageUpload(file); 
-      
-      // Generate a preview URL from the file object
       setPreview(URL.createObjectURL(file));
     }
   };
