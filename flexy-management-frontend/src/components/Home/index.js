@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import MapComponent from '../MapComponent';
 import FlexyForm from '../FlexyForm';
-import Loader from '../Loader';
+import LoadingView from '../LoadingView';
 import './index.css';
 
 const fallbackCenter = {
@@ -49,7 +49,7 @@ const Home = () => {
   };
 
   if (!currentCenter) {
-    return <Loader />;
+    return <LoadingView />;
   }
 
   return (

@@ -1,10 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ImageUpload from '../ImageUpload';
+import LoadingView from '../LoadingView';
+import FailureView from '../FailureView';
 import axios from 'axios';
 import './index.css';
 
 const API_URL = 'http://localhost:8080';
+
+const STATUS = {
+  IDLE: 'idle',
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  FAILURE: 'failure',
+};
 
 const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
   const navigate = useNavigate();
@@ -20,13 +29,13 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     image: null,
   });
   const [errors, setErrors] = useState({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitStatus, setSubmitStatus] = useState(STATUS.IDLE);
 
   useEffect(() => {
     if (existingFlexy) {
       setFormData({
         ...existingFlexy,
-        image: null // We don't want to re-upload the image unless a new one is selected
+        image: null
       });
     }
   }, [existingFlexy]);
@@ -49,34 +58,6 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const addFlexy = async (submissionData) => {
-    try {
-      await axios.post(`${API_URL}/hoardings`, submissionData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      alert('Flexy added successfully!');
-      navigate('/notes');
-    } catch (error) {
-      console.error('Error adding flexy:', error.response?.data || error.message);
-      alert(`Error: ${error.response?.data?.message || 'Could not add flexy.'}`);
-      throw error;
-    }
-  };
-  
-  const updateFlexy = async (submissionData) => {
-    try {
-      await axios.patch(`${API_URL}/hoardings/${existingFlexy._id}`, submissionData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-      alert('Flexy updated successfully!');
-      navigate('/notes');
-    } catch (error) {
-      console.error('Error updating flexy:', error.response?.data || error.message);
-      alert(`Error: ${error.response?.data?.message || 'Could not update flexy.'}`);
-      throw error;
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
@@ -84,7 +65,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
       return;
     }
 
-    setIsSubmitting(true);
+    setSubmitStatus(STATUS.LOADING);
     
     const submissionData = new FormData();
     Object.keys(formData).forEach(key => {
@@ -99,19 +80,34 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
         submissionData.append('coordinates', [pinnedLocation.lng, pinnedLocation.lat].join(','));
     }
 
-
     try {
       if (existingFlexy) {
-        await updateFlexy(submissionData);
+        await axios.patch(`${API_URL}/hoardings/${existingFlexy._id}`, submissionData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        alert('Flexy updated successfully!');
       } else {
-        await addFlexy(submissionData);
+        await axios.post(`${API_URL}/hoardings`, submissionData, {
+          headers: { 'Content-Type': 'multipart/form-data' },
+        });
+        alert('Flexy added successfully!');
       }
+      setSubmitStatus(STATUS.SUCCESS);
+      navigate('/notes');
     } catch (error) {
-      console.error("Submission failed:", error);
-    } finally {
-      setIsSubmitting(false);
+      console.error('Submission failed:', error.response?.data || error.message);
+      alert(`Error: ${error.response?.data?.message || 'Could not submit flexy.'}`);
+      setSubmitStatus(STATUS.FAILURE);
     }
   };
+  
+  if (submitStatus === STATUS.LOADING) {
+    return <LoadingView />;
+  }
+  
+  if (submitStatus === STATUS.FAILURE) {
+    return <FailureView message="Submission Failed. Please try again." />;
+  }
 
   return (
     <form className="flexy-form" onSubmit={handleSubmit} noValidate>
@@ -183,8 +179,8 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
         <textarea name="notes" value={formData.notes} onChange={handleChange}></textarea>
       </div>
       
-      <button type="submit" className="submit-btn" disabled={isSubmitting}>
-        {isSubmitting ? 'Submitting...' : (existingFlexy ? 'Update Flexy' : 'Add Flexy')}
+      <button type="submit" className="submit-btn" disabled={submitStatus === STATUS.LOADING}>
+        {submitStatus === STATUS.LOADING ? 'Submitting...' : (existingFlexy ? 'Update Flexy' : 'Add Flexy')}
       </button>
     </form>
   );

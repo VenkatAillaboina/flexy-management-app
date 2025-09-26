@@ -1,7 +1,7 @@
 import ClipLoader from "react-spinners/ClipLoader";
 import './index.css';
 
-const Loader = () => {
+const LoadingView = () => {
   return (
     <div className="loader-container">
       <ClipLoader
@@ -15,4 +15,4 @@ const Loader = () => {
   );
 };
 
-export default Loader;
+export default LoadingView;

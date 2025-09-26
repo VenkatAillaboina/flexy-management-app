@@ -1,21 +1,29 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import FlexyForm from '../FlexyForm';
-import Loader from '../Loader';
+import LoadingView from '../LoadingView';
+import FailureView from '../FailureView';
 import MapComponent from '../MapComponent';
 import axios from 'axios';
 import './index.css';
 
 const API_URL = 'http://localhost:8080';
 
+const STATUS = {
+  LOADING: 'loading',
+  SUCCESS: 'success',
+  FAILURE: 'failure',
+};
+
 const NoteDetails = () => {
   const { id } = useParams();
   const [flexy, setFlexy] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [status, setStatus] = useState(STATUS.LOADING);
   const [mapCenter, setMapCenter] = useState(null);
 
   useEffect(() => {
     const fetchFlexy = async () => {
+      setStatus(STATUS.LOADING);
       try {
         const response = await axios.get(`${API_URL}/hoardings/${id}`);
         const fetchedFlexy = response.data.data;
@@ -25,38 +33,54 @@ const NoteDetails = () => {
           const [lng, lat] = fetchedFlexy.location.coordinates;
           setMapCenter({ lat, lng });
         }
-
+        setStatus(STATUS.SUCCESS);
       } catch (error) {
         console.error("Failed to fetch flexy details:", error);
-      } finally {
-        setLoading(false);
+        setStatus(STATUS.FAILURE);
       }
     };
     fetchFlexy();
   }, [id]);
 
-  if (loading || (flexy && !mapCenter)) {
-    return <Loader />;
-  }
+  const renderLoadingView = () => <LoadingView />;
 
-  if (!flexy) {
+  const renderFailureView = () => <FailureView message="Failed to fetch flexy details." />;
+
+  const renderSuccessView = () => {
+    if (!flexy) {
+      return (
+        <div>
+          <h2>Flexy not found!</h2>
+          <Link to="/notes">Back to list</Link>
+        </div>
+      );
+    }
+
     return (
-      <div>
-        <h2>Flexy not found!</h2>
-        <Link to="/notes">Back to list</Link>
+      <div className="note-details-container">
+        <MapComponent
+          markerPosition={mapCenter}
+          center={mapCenter}
+        />
+        <FlexyForm existingFlexy={flexy} pinnedLocation={mapCenter} />
       </div>
     );
-  }
+  };
 
-  return (
-    <div className="note-details-container">
-      <MapComponent
-        markerPosition={mapCenter}
-        center={mapCenter}
-      />
-      <FlexyForm existingFlexy={flexy} pinnedLocation={mapCenter} />
-    </div>
-  );
+  const renderView = () => {
+    switch (status) {
+      case STATUS.LOADING:
+        return renderLoadingView();
+      case STATUS.FAILURE:
+        return renderFailureView();
+      case STATUS.SUCCESS:
+        return renderSuccessView();
+      default:
+        return null;
+    }
+  };
+
+  return <>{renderView()}</>;
 };
 
 export default NoteDetails;

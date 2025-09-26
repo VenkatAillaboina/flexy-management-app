@@ -1,19 +1,63 @@
 .main-nav {
-  background-color: #282c34;
-  padding: 1rem;
+  background-color: #1e1c15;
+  padding: 1rem 2rem;
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.nav-logo img {
+  height: 50px;
+}
+
+.nav-links {
+  display: flex;
   gap: 2rem;
 }
 
 .main-nav a {
-  color: #61dafb;
+  color: #ffffff;
   text-decoration: none;
   font-size: 1.2rem;
   font-weight: bold;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .main-nav a:hover,
 .main-nav a.active {
-  text-decoration: underline;
+  color: #007bff;
+  text-decoration: none;
+}
+
+.nav-icon {
+  display: none; /* Hide icons by default on larger screens */
+}
+
+@media (max-width: 768px) {
+  .main-nav {
+    justify-content: space-around;
+  }
+  
+  .nav-links {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .main-nav a {
+    flex-direction: column;
+    font-size: 0.8rem;
+  }
+
+  .nav-icon {
+    display: block; /* Show icons on small screens */
+    font-size: 1.5rem;
+  }
+
+  .nav-text {
+    display: none; /* Hide text on small screens */
+  }
 }

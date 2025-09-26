@@ -1,6 +1,6 @@
 import { useCallback, useState, useEffect } from 'react'; // Import useEffect
 import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
-import Loader from '../Loader';
+import LoadingView from '../LoadingView';
 import './index.css';
 
 const MapComponent = ({ onMapClick, markerPosition, center }) => {
@@ -31,7 +31,7 @@ const MapComponent = ({ onMapClick, markerPosition, center }) => {
   }, []);
 
   if (!isLoaded) {
-    return <Loader />;
+    return <LoadingView />;
   }
 
   return (

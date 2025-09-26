@@ -13,10 +13,16 @@
 .note-card {
   background-color: #fff;
   border-radius: 8px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
   display: flex;
   flex-direction: column;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.note-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px rgba(0,0,0,0.15);
 }
 
 .note-card-image {
@@ -29,15 +35,16 @@
   padding: 15px;
   display: flex;
   flex-direction: column;
-  flex-grow: 1; /* Allows the content to fill the card */
+  flex-grow: 1;
 }
 
 .note-card-content h3 {
   margin-top: 0;
+  color: #007bff; /* Changed from #146a78 */
 }
 
 .card-actions {
-  margin-top: auto; /* Pushes the actions to the bottom of the card */
+  margin-top: auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -49,22 +56,28 @@
   border-radius: 4px;
   border: none;
   cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .details-link {
-  background-color: #007bff;
+  background-color: #007bff; /* Changed from #58879d */
   color: white;
 }
 
 .details-link:hover {
-  background-color: #0056b3;
+  background-color: #0056b3; /* Darker shade of the new blue */
 }
 
 .delete-btn {
-  background-color: #dc3545;
+  background-color: #ff7f50;
   color: white;
 }
 
 .delete-btn:hover {
-  background-color: #c82333;
+  background-color: #cc6540;
+}
+
+.delete-btn:disabled {
+  background-color: #a0a0a0;
+  cursor: not-allowed;
 }
