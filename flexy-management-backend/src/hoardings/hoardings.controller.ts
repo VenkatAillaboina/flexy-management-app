@@ -3,6 +3,8 @@ import { HoardingsService } from './hoardings.service';
 import { CreateHoardingDto } from './dto/create-hoarding.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { Hoarding } from './schemas/hoarding.schema';
+import { UpdateHoardingDto } from './dto/update-hoarding.dto';
 
 @ApiTags('hoardings')
 @Controller('hoardings')
@@ -50,6 +52,69 @@ export class HoardingsController {
     return {
       statusCode: HttpStatus.OK,
       message: 'Hoardings retrieved successfully',
+      data,
+    };
+  }
+
+   @Get(':id')
+  @ApiOperation({ summary: 'Retrieve a hoarding record by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'Successfully retrieved the hoarding.',
+  })
+  @ApiResponse({ status: 404, description: 'Hoarding not found.' })
+  async findOne(@Param('id') id: string): Promise<{
+    statusCode: number;
+    message: string;
+    data: Hoarding;
+  }> {
+    const data = await this.hoardingsService.findOne(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Hoarding retrieved successfully',
+      data,
+    };
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Update a hoarding record by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The hoarding was updated successfully.',
+  })
+  @ApiResponse({ status: 404, description: 'Hoarding not found.' })
+  async update(
+    @Param('id') id: string,
+    @Body() updateHoardingDto: UpdateHoardingDto,
+  ): Promise<{
+    statusCode: number;
+    message: string;
+    data: Hoarding;
+  }> {
+    const data = await this.hoardingsService.update(id, updateHoardingDto);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Hoarding updated successfully',
+      data,
+    };
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: 'Delete a hoarding record by ID' })
+  @ApiResponse({
+    status: 200,
+    description: 'The hoarding was deleted successfully.',
+  })
+  @ApiResponse({ status: 404, description: 'Hoarding not found.' })
+  async remove(@Param('id') id: string): Promise<{
+    statusCode: number;
+    message: string;
+    data: Hoarding;
+  }> {
+    const data = await this.hoardingsService.remove(id);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Hoarding deleted successfully',
       data,
     };
   }

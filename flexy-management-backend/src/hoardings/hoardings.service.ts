@@ -1,9 +1,10 @@
-import { Injectable, InternalServerErrorException, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, BadRequestException, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel, InjectConnection } from '@nestjs/mongoose';
 import { Model, Connection } from 'mongoose';
 import { CreateHoardingDto } from './dto/create-hoarding.dto';
 import { Hoarding } from './schemas/hoarding.schema';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
+import { UpdateHoardingDto } from './dto/update-hoarding.dto';
 
 @Injectable()
 export class HoardingsService {
@@ -62,8 +63,37 @@ export class HoardingsService {
     }
   }
 
-  async findAll(): Promise<Hoarding[]> {
-    return this.hoardingModel.find().exec();
+  async findAll(): Promise<Partial<Hoarding>[]> {
+    return this.hoardingModel
+      .find()
+      .select('name imageUrl address status') // only these fields
+      .exec();
+  }
+
+  async findOne(id: string): Promise<Hoarding> {
+    const hoarding = await this.hoardingModel.findById(id).exec();
+    if (!hoarding) {
+      throw new NotFoundException(`Hoarding with ID "${id}" not found`);
+    }
+    return hoarding;
+  }
+
+  async update(id: string, updateHoardingDto: UpdateHoardingDto): Promise<Hoarding> {
+    const existingHoarding = await this.hoardingModel.findByIdAndUpdate(id, updateHoardingDto, { new: true });
+
+    if (!existingHoarding) {
+      throw new NotFoundException(`Hoarding with ID "${id}" not found`);
+    }
+    return existingHoarding;
+  }
+  
+  async remove(id: string): Promise<Hoarding> {
+    const deletedHoarding = await this.hoardingModel.findByIdAndDelete(id);
+
+    if (!deletedHoarding) {
+      throw new NotFoundException(`Hoarding with ID "${id}" not found`);
+    }
+    return deletedHoarding;
   }
 
 }
