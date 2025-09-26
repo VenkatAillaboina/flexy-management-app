@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ImageUpload from '../ImageUpload';
 import './index.css';
@@ -17,7 +17,6 @@ const FlexyForm = ({ onFormSubmit, existingFlexy, pinnedLocation }) => {
     }
   }, [existingFlexy]);
 
-  // This new useEffect updates the form when the map is clicked
   useEffect(() => {
     if (pinnedLocation) {
       const { lat, lng } = pinnedLocation;
@@ -50,51 +49,71 @@ const FlexyForm = ({ onFormSubmit, existingFlexy, pinnedLocation }) => {
 
   return (
     <form className="flexy-form" onSubmit={handleSubmit}>
-       <h2>{existingFlexy ? 'Edit Flexy Details' : 'Add New Flexy'}</h2>
+      <h2>{existingFlexy ? 'Edit Flexy Details' : 'Add New Flexy'}</h2>
       
-      <label>Flexy Name / Title</label>
-      <input type="text" name="name" value={formData.name} onChange={handleChange} required />
-      
-      <label>Location (GPS Coordinates)</label>
-      <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="Click map or enter manually" />
-      
-      <label>Address / Landmark</label>
-      <textarea name="address" value={formData.address} onChange={handleChange}></textarea>
-      
-      <label>Dimensions (Width x Height in feet)</label>
-      <div className="dimension-group">
-        <input type="number" name="width" value={formData.width} onChange={handleChange} placeholder="Width" />
-        <span>x</span>
-        <input type="number" name="height" value={formData.height} onChange={handleChange} placeholder="Height" />
+      <div className="form-group">
+        <label>Flexy Name / Title</label>
+        <input type="text" name="name" value={formData.name} onChange={handleChange} required />
       </div>
       
-      <label>Type</label>
-      <select name="type" value={formData.type} onChange={handleChange}>
-        <option>Hoarding</option>
-        <option>Banner</option>
-        <option>Digital Screen</option>
-        <option>Pole Kiosk</option>
-        <option>Wall Wrap</option>
-      </select>
+      <div className="form-group">
+        <label>Location (GPS Coordinates)</label>
+        <input type="text" name="location" value={formData.location} onChange={handleChange} placeholder="Click map or enter manually" />
+      </div>
       
-      <label>Availability Status</label>
-      <select name="status" value={formData.status} onChange={handleChange}>
-        <option>Available</option>
-        <option>Occupied</option>
-        <option>Reserved</option>
-      </select>
+      <div className="form-group">
+        <label>Address / Landmark</label>
+        <textarea name="address" value={formData.address} onChange={handleChange}></textarea>
+      </div>
       
-      <label>Price / Rent (per month)</label>
-      <input type="number" name="price" value={formData.price} onChange={handleChange} />
+      <div className="form-group">
+        <label>Dimensions (Width x Height in feet)</label>
+        <div className="dimension-group">
+          <input type="number" name="width" value={formData.width} onChange={handleChange} placeholder="Width" />
+          <span>x</span>
+          <input type="number" name="height" value={formData.height} onChange={handleChange} placeholder="Height" />
+        </div>
+      </div>
       
-      <label>Owner / Agency Contact</label>
-      <input type="text" name="ownerContact" value={formData.ownerContact} onChange={handleChange} />
+      <div className="form-group">
+        <label>Type</label>
+        <select name="type" value={formData.type} onChange={handleChange}>
+          <option>Hoarding</option>
+          <option>Banner</option>
+          <option>Digital Screen</option>
+          <option>Pole Kiosk</option>
+          <option>Wall Wrap</option>
+        </select>
+      </div>
       
-      <label>Upload Picture</label>
-      <ImageUpload onImageUpload={handleImageUpload} />
+      <div className="form-group">
+        <label>Availability Status</label>
+        <select name="status" value={formData.status} onChange={handleChange}>
+          <option>Available</option>
+          <option>Occupied</option>
+          <option>Reserved</option>
+        </select>
+      </div>
       
-      <label>Notes / Description</label>
-      <textarea name="notes" value={formData.notes} onChange={handleChange}></textarea>
+      <div className="form-group">
+        <label>Price / Rent (per month)</label>
+        <input type="number" name="price" value={formData.price} onChange={handleChange} />
+      </div>
+      
+      <div className="form-group">
+        <label>Owner / Agency Contact</label>
+        <input type="text" name="ownerContact" value={formData.ownerContact} onChange={handleChange} />
+      </div>
+      
+      <div className="form-group">
+        <label>Upload Picture</label>
+        <ImageUpload onImageUpload={handleImageUpload} />
+      </div>
+      
+      <div className="form-group">
+        <label>Notes / Description</label>
+        <textarea name="notes" value={formData.notes} onChange={handleChange}></textarea>
+      </div>
       
       <button type="submit" className="submit-btn">
         {existingFlexy ? 'Update Flexy' : 'Add Flexy'}

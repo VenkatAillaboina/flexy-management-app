@@ -8,12 +8,18 @@
   background-color: #fff;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 15px; /* Increased gap for better spacing */
 }
 
 .flexy-form h2 {
   margin-top: 0;
   text-align: center;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
 }
 
 .flexy-form label {

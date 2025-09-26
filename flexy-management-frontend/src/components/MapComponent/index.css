@@ -1,0 +1,30 @@
+.map-container-inner {
+  flex: 1;
+  min-width: 300px;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-header {
+  margin-bottom: 15px;
+}
+
+.location-btn {
+  padding: 8px 12px;
+  border: 1px solid #007bff;
+  background-color: #fff;
+  color: #007bff;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.location-btn:hover {
+  background-color: #007bff;
+  color: #fff;
+}
