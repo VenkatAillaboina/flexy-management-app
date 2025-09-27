@@ -1,13 +1,23 @@
 import { Controller, Post, Body, HttpCode, HttpStatus } from '@nestjs/common';
 import { MailerService } from '@nestjs-modules/mailer';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
 
 // DTO for validating incoming request body
 class SendMailDto {
+  @IsString()
+  @IsNotEmpty()
   name: string;
+
+  @IsEmail()
+  @IsNotEmpty()
   email: string;
+
+  @IsString()
+  @IsNotEmpty()
   message: string;
 }
+
 
 @ApiTags('mail')
 @Controller('mail')
@@ -22,9 +32,11 @@ export class MailController {
   async sendEmail(@Body() sendMailDto: SendMailDto) {
     const { name, email, message } = sendMailDto;
 
+    const adminEmail = 'bhanuteja.edunet@gmail.com';
+
     await this.mailerService.sendMail({
-      to: email, // recipient
-      from: '"Tapza HoardMgmt" <bhanuteja.edunet@gmail.com>', // sender
+      to: adminEmail, // recipient
+      from: email, // sender
       replyTo: email,
       subject: `📩 New Message from ${name} via Contact Form`,
       html: `
