@@ -1,13 +1,13 @@
 import { useCallback, useState } from 'react';
-import { GoogleMap, useJsApiLoader, Marker, InfoWindow } from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader, Marker, InfoWindow, DirectionsRenderer } from '@react-google-maps/api';
 import LoadingView from '../LoadingView';
 import HoardingDetailsPopup from '../HoardingDetailsPopup';
 import './index.css';
 
-const MapComponent = ({ onMapClick, markers, center }) => {
+const MapComponent = ({ onMapClick, markers, center, directions }) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: process.env.GOOGLE_MAPS_API, // Replace with your API key
+    googleMapsApiKey: process.env.GOOGLE_MAPS_API, // Make sure this is correctly set up
     libraries: ['geometry', 'places'],
   });
 
@@ -27,21 +27,25 @@ const MapComponent = ({ onMapClick, markers, center }) => {
   const handleMarkerMouseOut = () => {
     setActiveMarker(null);
   };
-  
+
   const handleMarkerClick = (marker) => {
     setSelectedHoarding(marker);
   }
 
   const onLoad = useCallback(function callback(map) {
-    const bounds = new window.google.maps.LatLngBounds(center);
-    if (markers.length > 0) {
-        markers.forEach(marker => {
-          bounds.extend(new window.google.maps.LatLng(marker.location.coordinates[1], marker.location.coordinates[0]));
-        });
+    if (!directions) {
+      const bounds = new window.google.maps.LatLngBounds(center);
+      if (markers.length > 0) {
+          markers.forEach(marker => {
+            bounds.extend(new window.google.maps.LatLng(marker.location.coordinates[1], marker.location.coordinates[0]));
+          });
+      }
+      if (bounds) {
+          map.fitBounds(bounds);
+      }
     }
-    map.fitBounds(bounds);
     setMap(map);
-  }, [center, markers]);
+  }, [center, markers, directions]);
 
   const onUnmount = useCallback(function callback(map) {
     setMap(null);
@@ -62,7 +66,7 @@ const MapComponent = ({ onMapClick, markers, center }) => {
         onClick={onMapClick}
       >
         {markers.map((marker) => (
-            <Marker 
+            <Marker
                 key={marker._id}
                 position={{ lat: marker.location.coordinates[1], lng: marker.location.coordinates[0] }}
                 icon={customMarkerIcon}
@@ -80,9 +84,10 @@ const MapComponent = ({ onMapClick, markers, center }) => {
                 )}
             </Marker>
         ))}
+        {directions && <DirectionsRenderer directions={directions} />}
       </GoogleMap>
       {selectedHoarding && (
-          <HoardingDetailsPopup 
+          <HoardingDetailsPopup
             hoarding={selectedHoarding}
             onClose={() => setSelectedHoarding(null)}
           />
