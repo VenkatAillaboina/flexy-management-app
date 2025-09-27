@@ -12,6 +12,7 @@ import { UpdateHoardingDto } from './dto/update-hoarding.dto';
 import { Hoarding } from './schemas/hoarding.schema';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
 import { GeminiService } from 'src/gemini/gemini.service';
+import { RouteHoardingsDto } from './dto/route-hoardings.dto';
 
 @Injectable()
 export class HoardingsService {
@@ -44,11 +45,9 @@ export class HoardingsService {
         if (!finalDto.address && geminiDetails.address !== 'N/A') {
           finalDto.address = geminiDetails.address;
         }
-        // TYPE-SAFE CHECK: Only assign if width is missing AND Gemini returned a valid number.
         if (!finalDto.width && typeof geminiDetails.widthInCm === 'number') {
           finalDto.width = geminiDetails.widthInCm;
         }
-        // TYPE-SAFE CHECK: Only assign if height is missing AND Gemini returned a valid number.
         if (!finalDto.height && typeof geminiDetails.heightInCm === 'number') {
           finalDto.height = geminiDetails.heightInCm;
         }
@@ -85,7 +84,7 @@ export class HoardingsService {
   }
 
   async findAll(): Promise<Partial<Hoarding>[]> {
-    return this.hoardingModel.find().select('name imageUrl address status').exec();
+    return this.hoardingModel.find().select('name imageUrl address status location').exec();
   }
 
   async findOne(id: string): Promise<Hoarding> {
@@ -95,6 +94,28 @@ export class HoardingsService {
     }
     return hoarding;
   }
+
+  async findHoardingsAlongRoute(routeHoardingsDto: RouteHoardingsDto): Promise<Hoarding[]> {
+    const { source, destination } = routeHoardingsDto;
+    // A simple bounding box for now. For a more accurate solution,
+    // you would use a more complex polygon that follows the route.
+    const minLng = Math.min(source[0], destination[0]);
+    const maxLng = Math.max(source[0], destination[0]);
+    const minLat = Math.min(source[1], destination[1]);
+    const maxLat = Math.max(source[1], destination[1]);
+
+    return this.hoardingModel.find({
+      location: {
+        $geoWithin: {
+          $box: [
+            [minLng, minLat],
+            [maxLng, maxLat],
+          ],
+        },
+      },
+    });
+  }
+
 
   async update(
     id: string,
@@ -174,4 +195,3 @@ export class HoardingsService {
     }
   }
 }
-

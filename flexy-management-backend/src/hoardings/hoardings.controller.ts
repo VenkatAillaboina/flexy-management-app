@@ -5,11 +5,24 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Hoarding } from './schemas/hoarding.schema';
 import { UpdateHoardingDto } from './dto/update-hoarding.dto';
+import { RouteHoardingsDto } from './dto/route-hoardings.dto';
 
 @ApiTags('hoardings')
 @Controller('hoardings')
 export class HoardingsController {
   constructor(private readonly hoardingsService: HoardingsService) { }
+
+  @Post('/along-route')
+  @ApiOperation({ summary: 'Find hoardings along a specified route' })
+  @ApiResponse({ status: 200, description: 'Successfully retrieved hoardings along the route.' })
+  async findAlongRoute(@Body() routeHoardingsDto: RouteHoardingsDto) {
+    const data = await this.hoardingsService.findHoardingsAlongRoute(routeHoardingsDto);
+    return {
+      statusCode: HttpStatus.OK,
+      message: 'Hoardings along the route retrieved successfully',
+      data,
+    };
+  }
 
   @Post()
   @HttpCode(HttpStatus.CREATED)
@@ -94,7 +107,7 @@ export class HoardingsController {
         new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }), // 4MB
         new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
       ],
-      fileIsRequired: false, // This makes the image upload optional
+      fileIsRequired: false,
     }),
   )
   image?: Express.Multer.File,

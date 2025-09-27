@@ -5,7 +5,7 @@ import { IsString, IsNotEmpty, IsNumber, IsArray, IsOptional, ArrayMinSize, Arra
 export class CreateHoardingDto {
   @ApiProperty({ example: 'Main Road Billboard', description: 'The public name or title of the hoarding.' })
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   name: string;
 
   @ApiProperty({ example: 'Near Hitech City Metro Station', description: 'A descriptive address or landmark.' })

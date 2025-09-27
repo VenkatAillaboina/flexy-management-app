@@ -13,8 +13,8 @@ class Location {
 
 @Schema({ timestamps: true })
 export class Hoarding extends Document {
-  @Prop({ required: true })
-  name: string;
+  @Prop()
+  name: string
 
   @Prop()
   address: string;
