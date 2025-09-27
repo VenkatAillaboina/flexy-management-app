@@ -1,63 +1,102 @@
-.main-nav {
-  background-color: #1e1c15;
+/* src/components/Navbar/index.css */
+.main-header {
+  background-color: #ffffff;
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
   position: relative;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-bottom: 1px solid #e9ecef;
 }
 
-.nav-logo img {
-  height: 50px;
-}
-
-.nav-links {
-  display: flex;
-  gap: 2rem;
-}
-
-.main-nav a {
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 1.2rem;
-  font-weight: bold;
-  transition: color 0.3s;
+.nav-logo {
   display: flex;
   align-items: center;
   gap: 0.5rem;
 }
 
-.main-nav a:hover,
-.main-nav a.active {
-  color: #007bff;
-  text-decoration: none;
+.nav-logo img {
+  height: 40px;
 }
 
+.nav-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #007BFF;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.main-header a {
+  color: #495057;
+  text-decoration: none;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.main-header a:hover,
+.main-header a.active {
+  color: #007BFF;
+}
+
+/* Adding an underline effect for active and hover states */
+.main-header a::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  transform: scaleX(0);
+  height: 2px;
+  bottom: -5px;
+  left: 0;
+  background-color: #007BFF;
+  transform-origin: bottom right;
+  transition: transform 0.25s ease-out;
+}
+
+.main-header a:hover::after,
+.main-header a.active::after {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+
 .nav-icon {
-  display: none; /* Hide icons by default on larger screens */
+  display: none;
 }
 
 @media (max-width: 768px) {
-  .main-nav {
-    justify-content: space-around;
-  }
-  
-  .nav-links {
-    width: 100%;
-    justify-content: space-around;
+  .main-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 
-  .main-nav a {
+  .nav-links {
     flex-direction: column;
-    font-size: 0.8rem;
+    width: 100%;
+    margin-top: 1rem;
+    gap: 1rem;
+  }
+
+  .main-header a {
+    font-size: 1.2rem;
+    padding: 0.5rem 0;
   }
 
   .nav-icon {
-    display: block; /* Show icons on small screens */
+    display: block;
     font-size: 1.5rem;
   }
 
   .nav-text {
-    display: none; /* Hide text on small screens */
+    display: inline-block;
   }
 }
