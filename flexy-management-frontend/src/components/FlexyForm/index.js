@@ -24,7 +24,8 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     height: '',
     price: '',
     status: 'Available',
-    ownerContact: '',
+    ownerContactNumber: '',
+    ownerName: '',
     notes: '',
     image: null,
   });
@@ -34,8 +35,16 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
   useEffect(() => {
     if (existingFlexy) {
       setFormData({
-        ...existingFlexy,
-        image: null
+        name: existingFlexy.name || '',
+        address: existingFlexy.address || '',
+        width: existingFlexy.width || '',
+        height: existingFlexy.height || '',
+        price: existingFlexy.price || '',
+        status: existingFlexy.status || 'Available',
+        ownerContactNumber: existingFlexy.ownerContactNumber || '',
+        ownerName: existingFlexy.ownerName || '',
+        notes: existingFlexy.notes || '',
+        image: null,
       });
     }
   }, [existingFlexy]);
@@ -170,8 +179,13 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
       </div>
       
       <div className="form-group">
+        <label>Owner Name</label>
+        <input type="text" name="ownerName" value={formData.ownerName} onChange={handleChange} />
+      </div>
+
+      <div className="form-group">
         <label>Owner / Agency Contact</label>
-        <input type="text" name="ownerContact" value={formData.ownerContact} onChange={handleChange} />
+        <input type="text" name="ownerContactNumber" value={formData.ownerContactNumber} onChange={handleChange} />
       </div>
       
       <div className="form-group">

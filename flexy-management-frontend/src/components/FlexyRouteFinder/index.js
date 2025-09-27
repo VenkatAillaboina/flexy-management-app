@@ -14,12 +14,10 @@ const STATUS = {
 };
 
 const FlexyRouteFinder = () => {
-  const [status, setStatus] = useState(STATUS.LOADING);
+  const [status, setStatus] = useState(STATUS.SUCCESS);
   const [source, setSource] = useState('');
   const [destination, setDestination] = useState('');
-  const [directions, setDirections] = useState(null);
   const [markers, setMarkers] = useState([]);
-  const [filteredMarkers, setFilteredMarkers] = useState([]);
 
   useEffect(() => {
     const fetchFlexys = async () => {
@@ -27,12 +25,7 @@ const FlexyRouteFinder = () => {
       try {
         const response = await axios.get(`${API_URL}/hoardings`);
         const fetchedFlexys = response.data.data || [];
-        const hoardingMarkers = fetchedFlexys.map(flexy => {
-          const [lng, lat] = flexy.location.coordinates;
-          return { lat, lng };
-        });
-        setMarkers(hoardingMarkers);
-        setFilteredMarkers(hoardingMarkers);
+        setMarkers(fetchedFlexys);
         setStatus(STATUS.SUCCESS);
       } catch (error) {
         console.error("Failed to fetch flexys:", error);
@@ -57,7 +50,7 @@ const FlexyRouteFinder = () => {
   };
 
   const handleRouteSearch = async () => {
-    if (source && destination && window.google) {
+    if (source && destination) {
         setStatus(STATUS.LOADING)
       try {
         const [sourceCoords, destCoords] = await Promise.all([
@@ -65,33 +58,14 @@ const FlexyRouteFinder = () => {
           getCoordinates(destination),
         ]);
 
-        const response = await axios.post(`${API_URL}/hoardings/along-route`, {
+        const response = await axios.post(`${API_URL}/hoardings/find-in-between`, {
           source: [sourceCoords.lng(), sourceCoords.lat()],
           destination: [destCoords.lng(), destCoords.lat()],
         });
 
         const alongRouteFlexys = response.data.data || [];
-        const alongRouteMarkers = alongRouteFlexys.map(flexy => {
-          const [lng, lat] = flexy.location.coordinates;
-          return { lat, lng };
-        });
-        setFilteredMarkers(alongRouteMarkers);
-
-        const directionsService = new window.google.maps.DirectionsService();
-        directionsService.route(
-          {
-            origin: source,
-            destination: destination,
-            travelMode: window.google.maps.TravelMode.DRIVING,
-          },
-          (result, status) => {
-            if (status === window.google.maps.DirectionsStatus.OK) {
-              setDirections(result);
-            } else {
-              console.error(`error fetching directions ${result}`);
-            }
-          }
-        );
+        setMarkers(alongRouteFlexys);
+        
       } catch (error) {
         console.error("Error during route search:", error);
         setStatus(STATUS.FAILURE)
@@ -104,8 +78,7 @@ const FlexyRouteFinder = () => {
 
 
   const clearRoute = () => {
-    setDirections(null);
-    setFilteredMarkers(markers);
+    setMarkers([]);
     setSource('');
     setDestination('');
   };
@@ -129,13 +102,12 @@ const FlexyRouteFinder = () => {
             value={destination}
             onChange={(e) => setDestination(e.target.value)}
           />
-          <button onClick={handleRouteSearch}>Find Route</button>
+          <button onClick={handleRouteSearch}>Find Hoardings</button>
           <button onClick={clearRoute} className="clear-btn">Clear</button>
         </div>
         <MapComponent
           center={{ lat: 17.9689, lng: 79.5941 }}
-          markers={filteredMarkers}
-          directions={directions}
+          markers={markers}
         />
     </div>
   );

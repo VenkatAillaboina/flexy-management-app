@@ -5,21 +5,21 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Hoarding } from './schemas/hoarding.schema';
 import { UpdateHoardingDto } from './dto/update-hoarding.dto';
-import { RouteHoardingsDto } from './dto/route-hoardings.dto';
+import { FindInBetweenDto } from './dto/find-in-between.dto';
 
 @ApiTags('hoardings')
 @Controller('hoardings')
 export class HoardingsController {
   constructor(private readonly hoardingsService: HoardingsService) { }
 
-  @Post('/along-route')
-  @ApiOperation({ summary: 'Find hoardings along a specified route' })
-  @ApiResponse({ status: 200, description: 'Successfully retrieved hoardings along the route.' })
-  async findAlongRoute(@Body() routeHoardingsDto: RouteHoardingsDto) {
-    const data = await this.hoardingsService.findHoardingsAlongRoute(routeHoardingsDto);
+  @Post('find-in-between')
+  @ApiOperation({ summary: 'Find hoardings between two points' })
+  @ApiResponse({ status: 200, description: 'Successfully retrieved hoardings.' })
+  async findInBetween(@Body() findInBetweenDto: FindInBetweenDto) {
+    const data = await this.hoardingsService.findInBetween(findInBetweenDto);
     return {
       statusCode: HttpStatus.OK,
-      message: 'Hoardings along the route retrieved successfully',
+      message: 'Hoardings retrieved successfully',
       data,
     };
   }

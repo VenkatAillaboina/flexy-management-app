@@ -14,6 +14,7 @@ const Home = () => {
   const [markerPosition, setMarkerPosition] = useState(null);
 
   useEffect(() => {
+    // ... (geolocation logic remains the same)
     const geoOptions = {
       enableHighAccuracy: true,
       timeout: 10000,
@@ -42,6 +43,7 @@ const Home = () => {
     }
   }, []);
 
+
   const handleMapClick = (event) => {
     const lat = event.latLng.lat();
     const lng = event.latLng.lng();
@@ -52,11 +54,24 @@ const Home = () => {
     return <LoadingView />;
   }
 
+  // Create a marker with the structure MapComponent expects
+  const markersForMap = markerPosition
+    ? [
+        {
+          _id: 'current-position', // A unique key for the marker
+          location: {
+            coordinates: [markerPosition.lng, markerPosition.lat],
+          },
+          name: 'Selected Location' // A name for the InfoWindow
+        },
+      ]
+    : [];
+
   return (
     <div className="home-container">
       <MapComponent
         onMapClick={handleMapClick}
-        markers={markerPosition ? [markerPosition] : []}
+        markers={markersForMap}
         center={currentCenter}
       />
       <FlexyForm pinnedLocation={markerPosition} />

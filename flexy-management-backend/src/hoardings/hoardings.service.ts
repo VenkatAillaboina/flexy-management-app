@@ -11,8 +11,7 @@ import { CreateHoardingDto } from './dto/create-hoarding.dto';
 import { UpdateHoardingDto } from './dto/update-hoarding.dto';
 import { Hoarding } from './schemas/hoarding.schema';
 import { CloudinaryService } from 'src/cloudinary/cloudinary.service';
-import { GeminiService } from 'src/gemini/gemini.service';
-import { RouteHoardingsDto } from './dto/route-hoardings.dto';
+import { FindInBetweenDto } from './dto/find-in-between.dto';
 
 @Injectable()
 export class HoardingsService {
@@ -21,7 +20,6 @@ export class HoardingsService {
   constructor(
     @InjectModel(Hoarding.name) private readonly hoardingModel: Model<Hoarding>,
     private readonly cloudinaryService: CloudinaryService,
-    private readonly geminiService: GeminiService,
     @InjectConnection() private readonly connection: Connection,
   ) {}
 
@@ -35,23 +33,7 @@ export class HoardingsService {
     try {
       const finalDto = { ...createHoardingDto };
       
-      this.logger.log('Analyzing image with Gemini to autofill missing data...');
-      const geminiDetails = await this.geminiService.getHoardingDetailsFromImage(image);
-
-      if (geminiDetails) {
-        if (!finalDto.name && geminiDetails.name !== 'N/A') {
-          finalDto.name = geminiDetails.name;
-        }
-        if (!finalDto.address && geminiDetails.address !== 'N/A') {
-          finalDto.address = geminiDetails.address;
-        }
-        if (!finalDto.width && typeof geminiDetails.widthInCm === 'number') {
-          finalDto.width = geminiDetails.widthInCm;
-        }
-        if (!finalDto.height && typeof geminiDetails.heightInCm === 'number') {
-          finalDto.height = geminiDetails.heightInCm;
-        }
-      }
+      this.logger.log('Uploading the image to Cloudinary and fetching the Image URL');
 
       const uploadResult = await this.cloudinaryService.uploadImage(image);
       if (!uploadResult.secure_url) {
@@ -95,22 +77,25 @@ export class HoardingsService {
     return hoarding;
   }
 
-  async findHoardingsAlongRoute(routeHoardingsDto: RouteHoardingsDto): Promise<Hoarding[]> {
-    const { source, destination } = routeHoardingsDto;
-    // A simple bounding box for now. For a more accurate solution,
-    // you would use a more complex polygon that follows the route.
-    const minLng = Math.min(source[0], destination[0]);
-    const maxLng = Math.max(source[0], destination[0]);
-    const minLat = Math.min(source[1], destination[1]);
-    const maxLat = Math.max(source[1], destination[1]);
+   async findInBetween(findInBetweenDto: FindInBetweenDto): Promise<Hoarding[]> {
+    const { source, destination } = findInBetweenDto;
+    const [ lon1, lat1 ] = source;
+    const [ lon2, lat2 ] = destination;
+
+    // Calculate the midpoint
+    const midLon = (lon1 + lon2) / 2;
+    const midLat = (lat1 + lat2) / 2;
+
+    const radiusInKm = 15; // 15km proximity
 
     return this.hoardingModel.find({
       location: {
-        $geoWithin: {
-          $box: [
-            [minLng, minLat],
-            [maxLng, maxLat],
-          ],
+        $near: {
+          $geometry: {
+            type: 'Point',
+            coordinates: [midLon, midLat],
+          },
+          $maxDistance: radiusInKm * 1000, // convert km to meters
         },
       },
     });

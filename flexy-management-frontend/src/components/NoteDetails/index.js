@@ -42,9 +42,10 @@ const NoteDetails = () => {
     fetchFlexy();
   }, [id]);
 
+  // ... (renderLoadingView and renderFailureView remain the same)
   const renderLoadingView = () => <LoadingView />;
-
   const renderFailureView = () => <FailureView message="Failed to fetch flexy details." />;
+
 
   const renderSuccessView = () => {
     if (!flexy) {
@@ -59,7 +60,7 @@ const NoteDetails = () => {
     return (
       <div className="note-details-container">
         <MapComponent
-          markers={mapCenter ? [mapCenter] : []}
+          markers={flexy ? [flexy] : []}
           center={mapCenter}
         />
         <FlexyForm existingFlexy={flexy} pinnedLocation={mapCenter} />
