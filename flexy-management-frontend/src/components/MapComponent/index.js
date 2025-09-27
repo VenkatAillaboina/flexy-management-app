@@ -4,10 +4,12 @@ import LoadingView from '../LoadingView';
 import HoardingDetailsPopup from '../HoardingDetailsPopup';
 import './index.css';
 
+const MAPS_API = process.env.REACT_APP_GOOGLE_MAPS_API;
+
 const MapComponent = ({ onMapClick, markers, center, directions }) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: 'AIzaSyBYoE-nQMz-mzdTdKjyJAVv_F3G5eIq5sM',
+    googleMapsApiKey: MAPS_API,
     libraries: ['geometry', 'places'],
   });
 

@@ -1,5 +1,8 @@
 import { useState } from 'react';
+import axios from 'axios'; 
 import './index.css';
+
+const API_URL = process.env.REACT_APP_BACKEND_API;
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -7,25 +10,30 @@ const ContactForm = () => {
     email: '',
     message: '',
   });
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [status, setStatus] = useState('idle');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Here you would typically send the form data to a server
-    console.log('Form submitted:', formData);
-    setIsSubmitted(true);
+    setStatus('sending');
+    try {
+      await axios.post(`${API_URL}/mail/send`, formData);
+      setStatus('success');
+    } catch (error) {
+      console.error('Failed to send message:', error);
+      setStatus('error');
+    }
   };
 
-  if (isSubmitted) {
+  if (status === 'success') {
     return (
       <div className="contact-form-container">
         <div className="form-success-message">
-          <h2>Thank you!</h2>
+          <h2>Thank you!</h2>cdf
           <p>Your message has been sent to the admin.</p>
         </div>
       </div>

@@ -5,7 +5,7 @@ import LoadingView from '../LoadingView';
 import FailureView from '../FailureView';
 import './index.css';
 
-const API_URL = 'http://localhost:8080';
+const API_URL = process.env.REACT_APP_BACKEND_API;
 
 const STATUS = {
   LOADING: 'loading',
