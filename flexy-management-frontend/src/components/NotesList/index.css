@@ -1,72 +1,11 @@
-/* components/NotesList/index.css */
-.notes-container {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  height: calc(100vh - 80px); /* Adjust based on your navbar height */
-}
-
-.left-panel {
-  flex: 0 0 65%;
+.notes-list-container {
   padding: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.right-panel {
-  flex: 0 0 35%;
-  padding: 20px;
-  overflow-y: auto;
-  border-left: 1px solid #ddd;
-}
-
-.map-title {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.search-container {
-  margin-bottom: 20px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-.search-container input {
-  flex-grow: 1;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 1rem;
-}
-
-.search-container button {
-  padding: 10px 15px;
-  border: none;
-  background-color: #007bff;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.search-container button:hover {
-  background-color: #0056b3;
-}
-
-.clear-btn {
-  background-color: #6c757d;
-}
-
-.clear-btn:hover {
-  background-color: #5a6268;
 }
 
 .notes-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
 }
 
 .note-item {
@@ -75,9 +14,26 @@
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0,0,0,0.05);
   background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.note-item .flexy-image {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    border-radius: 4px;
+    margin-bottom: 15px;
 }
 
 .note-item h3 {
   margin-top: 0;
   color: #007bff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+  .notes-list {
+    grid-template-columns: 1fr; /* Single column on very small screens */
+  }
 }

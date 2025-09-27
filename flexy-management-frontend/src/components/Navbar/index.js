@@ -1,5 +1,5 @@
 import { NavLink } from 'react-router-dom';
-import { FaHome, FaList } from 'react-icons/fa';
+import { FaHome, FaList, FaMapMarkedAlt } from 'react-icons/fa';
 import './index.css';
 
 const Navbar = () => {
@@ -16,6 +16,10 @@ const Navbar = () => {
         <NavLink to="/notes">
           <FaList className="nav-icon" />
           <span className="nav-text">View All Flexys</span>
+        </NavLink>
+        <NavLink to="/route-finder">
+            <FaMapMarkedAlt className="nav-icon" />
+            <span className="nav-text">Route Finder</span>
         </NavLink>
       </div>
     </nav>
