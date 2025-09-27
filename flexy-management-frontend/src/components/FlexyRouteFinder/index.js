@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import LoadingView from '../LoadingView';
 import FailureView from '../FailureView';
@@ -20,7 +20,7 @@ const FlexyRouteFinder = () => {
   const [markers, setMarkers] = useState([]);
   const [directions, setDirections] = useState(null);
 
-  const fetchAllFlexys = async () => {
+  const fetchAllFlexys = useCallback(async () => {
     setStatus(STATUS.LOADING);
     try {
       const response = await axios.get(`${API_URL}/hoardings`);
@@ -31,11 +31,11 @@ const FlexyRouteFinder = () => {
       console.error("Failed to fetch flexys:", error);
       setStatus(STATUS.FAILURE);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchAllFlexys();
-  }, []);
+  }, [fetchAllFlexys]);
 
   const handleRouteSearch = async () => {
     if (!source || !destination) {
@@ -92,11 +92,10 @@ const FlexyRouteFinder = () => {
   };
 
   const renderLoadingView = () => <LoadingView />;
-  const renderFailureView = () => <FailureView message="Failed to fetch flexys." />;
+  const renderFailureView = () => <FailureView message="Failed to fetch flexys." onRetry={fetchAllFlexys} />;
 
   const renderSuccessView = () => (
     <div className="route-finder-container">
-        <h2 className="map-title">Flexy Route Finder</h2>
         <div className="search-container">
           <input
             type="text"

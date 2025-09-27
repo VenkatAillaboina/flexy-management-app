@@ -13,9 +13,24 @@
   margin-bottom: 20px;
 }
 
-
 .status-message.error {
   color: #ff4c4c;
   font-weight: 500;
   font-size: 1.5rem;
+}
+
+.retry-btn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #0A74DA;
+  color: white;
+  font-size: 1rem;
+  cursor: pointer;
+  margin-top: 20px;
+  transition: background-color 0.3s;
+}
+
+.retry-btn:hover {
+  background-color: #085da8;
 }

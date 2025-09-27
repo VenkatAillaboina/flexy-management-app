@@ -1,4 +1,3 @@
-/* src/components/Navbar/index.css */
 .main-header {
   background-color: #ffffff;
   padding: 1rem 2rem;
@@ -8,13 +7,14 @@
   position: relative;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-bottom: 1px solid #e9ecef;
+  z-index: 50;
 }
 
 .nav-logo {
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  z-index: 10; /* Ensures logo stays on top of the mobile menu */
+  z-index: 60;
 }
 
 .nav-logo img {
@@ -49,7 +49,7 @@
   color: #007BFF;
 }
 
-/* Underline effect for active and hover states */
+/* Underline effect */
 .main-header a::after {
   content: '';
   position: absolute;
@@ -69,44 +69,42 @@
   transform-origin: bottom left;
 }
 
-/* Hamburger icon styles (hidden on desktop) */
+/* Hamburger hidden on desktop */
 .hamburger {
   display: none;
   font-size: 1.8rem;
   cursor: pointer;
-  z-index: 10; /* Ensures icon stays on top */
+  z-index: 70;
 }
 
 /* --- Mobile View --- */
 @media (max-width: 768px) {
   .hamburger {
-    display: block; /* Show hamburger icon on mobile */
+    display: block;
   }
 
   .nav-links {
-    /* Position the menu off-screen to the right */
-    position: absolute;
+    position: fixed;
     top: 0;
     right: 0;
-    width: 60%; /* Or any width you prefer */
+    width: 70%;
     height: 100vh;
     background-color: white;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-    
-    /* Change layout to vertical and center the links */
+
     flex-direction: column;
     justify-content: center;
     align-items: center;
     gap: 2rem;
 
-    /* Hide the menu by default */
     transform: translateX(100%);
     transition: transform 0.3s ease-in-out;
+
+    z-index: 100;
   }
 
-  /* This class will be toggled by React to show the menu */
   .nav-links.open {
-    transform: translateX(0); /* Slide the menu into view */
+    transform: translateX(0);
   }
 
   .nav-icon {
@@ -116,5 +114,15 @@
 
   .nav-text {
     display: inline-block;
+  }
+
+  /* Close button inside menu */
+  .close-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 2rem;
+    cursor: pointer;
+    color: #007BFF;
   }
 }

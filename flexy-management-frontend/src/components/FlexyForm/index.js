@@ -105,7 +105,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
         alert('Flexy added successfully!');
       }
       setSubmitStatus(STATUS.SUCCESS);
-      navigate('/notes');
+      navigate('/view-all-flexy');
     } catch (error) {
       console.error('Submission failed:', error.response?.data || error.message);
       alert(`Error: ${error.response?.data?.message || 'Could not submit flexy.'}`);
@@ -118,7 +118,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
   }
   
   if (submitStatus === STATUS.FAILURE) {
-    return <FailureView message="Submission Failed. Please try again." />;
+    return <FailureView message="Submission Failed. Please try again." onRetry={() => setSubmitStatus(STATUS.IDLE)} />;
   }
 
   return (

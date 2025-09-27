@@ -5,7 +5,7 @@ import LoadingView from '../LoadingView';
 import './index.css';
 
 const fallbackCenter = {
-  lat: 17.9689, // Warangal
+  lat: 17.9689, 
   lng: 79.5941
 };
 
@@ -14,7 +14,6 @@ const Home = () => {
   const [markerPosition, setMarkerPosition] = useState(null);
 
   useEffect(() => {
-    // ... (geolocation logic remains the same)
     const geoOptions = {
       enableHighAccuracy: true,
       timeout: 10000,

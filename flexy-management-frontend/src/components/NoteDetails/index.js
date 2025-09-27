@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import FlexyForm from '../FlexyForm';
 import LoadingView from '../LoadingView';
@@ -21,38 +21,37 @@ const NoteDetails = () => {
   const [status, setStatus] = useState(STATUS.LOADING);
   const [mapCenter, setMapCenter] = useState(null);
 
-  useEffect(() => {
-    const fetchFlexy = async () => {
-      setStatus(STATUS.LOADING);
-      try {
-        const response = await axios.get(`${API_URL}/hoardings/${id}`);
-        const fetchedFlexy = response.data.data;
-        setFlexy(fetchedFlexy);
+  const fetchFlexy = useCallback(async () => {
+    setStatus(STATUS.LOADING);
+    try {
+      const response = await axios.get(`${API_URL}/hoardings/${id}`);
+      const fetchedFlexy = response.data.data;
+      setFlexy(fetchedFlexy);
 
-        if (fetchedFlexy && fetchedFlexy.location && fetchedFlexy.location.coordinates) {
-          const [lng, lat] = fetchedFlexy.location.coordinates;
-          setMapCenter({ lat, lng });
-        }
-        setStatus(STATUS.SUCCESS);
-      } catch (error) {
-        console.error("Failed to fetch flexy details:", error);
-        setStatus(STATUS.FAILURE);
+      if (fetchedFlexy && fetchedFlexy.location && fetchedFlexy.location.coordinates) {
+        const [lng, lat] = fetchedFlexy.location.coordinates;
+        setMapCenter({ lat, lng });
       }
-    };
-    fetchFlexy();
+      setStatus(STATUS.SUCCESS);
+    } catch (error) {
+      console.error("Failed to fetch flexy details:", error);
+      setStatus(STATUS.FAILURE);
+    }
   }, [id]);
 
-  // ... (renderLoadingView and renderFailureView remain the same)
-  const renderLoadingView = () => <LoadingView />;
-  const renderFailureView = () => <FailureView message="Failed to fetch flexy details." />;
+  useEffect(() => {
+    fetchFlexy();
+  }, [fetchFlexy]);
 
+  const renderLoadingView = () => <LoadingView />;
+  const renderFailureView = () => <FailureView message="Failed to fetch flexy details." onRetry={fetchFlexy} />;
 
   const renderSuccessView = () => {
     if (!flexy) {
       return (
         <div>
           <h2>Flexy not found!</h2>
-          <Link to="/notes">Back to list</Link>
+          <Link to="/view-all-flexy">Back to list</Link>
         </div>
       );
     }
