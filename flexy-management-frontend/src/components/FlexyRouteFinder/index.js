@@ -24,7 +24,7 @@ const FlexyRouteFinder = () => {
     setStatus(STATUS.LOADING);
     try {
       const response = await axios.get(`${API_URL}/hoardings`);
-      const fetchedFlexys = response.data.data || [];
+      const fetchedFlexys = response.data.data.data || [];
       setMarkers(fetchedFlexys);
       setStatus(STATUS.SUCCESS);
     } catch (error)      {

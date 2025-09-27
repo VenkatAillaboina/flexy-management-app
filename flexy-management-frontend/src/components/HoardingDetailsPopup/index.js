@@ -23,8 +23,8 @@ const HoardingDetailsPopup = ({ hoarding, onClose }) => {
   const formatText = (text) => (text ? text.replace(/_/g, ' ') : 'N/A');
 
   return (
-    <div className="hoarding-popup-overlay" onClick={onClose}>
-      <div className="hoarding-popup-content" onClick={(e) => e.stopPropagation()}>
+    <div className="popup-overlay" onClick={onClose}>
+      <div className="popup-content" onClick={(e) => e.stopPropagation()}>
         <button className="close-btn" onClick={onClose}>×</button>
         <img src={imageUrl} alt={name || 'Hoarding'} className="popup-img" />
         <h2>{name || 'Hoarding Details'}</h2>

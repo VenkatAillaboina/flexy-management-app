@@ -7,7 +7,7 @@
 
 .search-container {
   margin-bottom: 20px;
-  padding: 15px;
+  padding: 5px;
   background-color: #fff;
   border-radius: 12px;
   box-shadow: 0 4px 8px rgba(0,0,0,0.05);
@@ -58,6 +58,6 @@
 
   .search-container input,
   .search-container button {
-    width: 95%;
+    width: 80%;
   }
 }

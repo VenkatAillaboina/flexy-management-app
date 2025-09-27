@@ -67,7 +67,7 @@ const MapComponent = ({ onMapClick, markers, center, directions }) => {
         onUnmount={onUnmount}
         onClick={onMapClick}
       >
-        {markers.map((marker) => (
+        {Array.isArray(markers) && markers.map((marker) => (
             <Marker
                 key={marker._id}
                 position={{ lat: marker.location.coordinates[1], lng: marker.location.coordinates[0] }}
