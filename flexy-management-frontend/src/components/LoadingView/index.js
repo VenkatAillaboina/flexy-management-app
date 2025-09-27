@@ -1,10 +1,10 @@
-import ClipLoader from "react-spinners/ClipLoader";
+import HashLoader from "react-spinners/HashLoader";
 import './index.css';
 
 const LoadingView = () => {
   return (
     <div className="loader-container">
-      <ClipLoader
+      <HashLoader
         color={"#007bff"}
         loading={true}
         size={150}
