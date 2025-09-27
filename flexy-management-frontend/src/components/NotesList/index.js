@@ -46,7 +46,7 @@ const NotesList = () => {
                 <h3>{flexy.name}</h3>
                 <p><strong>Address:</strong> {flexy.address}</p>
                 <p><strong>Status:</strong> {flexy.status}</p>
-                <Link to={`/notes/${flexy._id}`}>View Details</Link>
+                <Link to={`/notes/${flexy._id}`} className="view-details-btn">View / Edit Details</Link>
             </div>
           </div>
         ))}

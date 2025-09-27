@@ -7,7 +7,7 @@ const LoadingView = () => {
       <ClipLoader
         color={"#007bff"}
         loading={true}
-        size={80}
+        size={150}
         aria-label="Loading Spinner"
         data-testid="loader"
       />

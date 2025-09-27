@@ -46,7 +46,6 @@
   outline: none;
 }
 
-
 .dimension-group {
   display: flex;
   align-items: center;
@@ -72,4 +71,16 @@
 .submit-btn:disabled {
   background-color: #a0a0a0;
   cursor: not-allowed;
+}
+
+.error-text {
+  color: red;
+  font-size: 0.875em;
+}
+
+@media (max-width: 768px) {
+  .flexy-form {
+    width: 100%;
+    max-width: 100%;
+  }
 }

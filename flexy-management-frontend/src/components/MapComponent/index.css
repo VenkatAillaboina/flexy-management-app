@@ -18,7 +18,7 @@
 /* On smaller screens (phones), make the map container wider */
 @media (max-width: 767px) {
   .map-container-inner {
-    min-width: 90vw; /* Use most of the screen width */
+    min-width: 300px; /* Use most of the screen width */
   }
 }
 

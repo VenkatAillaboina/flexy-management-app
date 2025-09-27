@@ -31,6 +31,23 @@
   color: #007bff;
 }
 
+.view-details-btn {
+  display: inline-block;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  border-radius: 4px;
+  text-decoration: none;
+  margin-top: auto; /* Pushes the button to the bottom */
+  transition: background-color 0.3s;
+}
+
+.view-details-btn:hover {
+  background-color: #0056b3;
+}
+
+
 /* Responsive adjustments */
 @media (max-width: 600px) {
   .notes-list {

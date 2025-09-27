@@ -58,6 +58,10 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     setFormData((prev) => ({ ...prev, image: file }));
   };
 
+  const handleImageRemove = () => {
+    setFormData((prev) => ({...prev, image: null, imageUrl: null }));
+  };
+
   const validateForm = () => {
     const newErrors = {};
     if (!pinnedLocation) newErrors.location = 'A location must be pinned on the map.';
@@ -70,7 +74,6 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) {
-      alert("Please fix the errors before submitting.");
       return;
     }
 
@@ -126,17 +129,12 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
         <label>Upload Picture</label>
         <ImageUpload
           onImageUpload={handleImageUpload}
+          onImageRemove={handleImageRemove}
           existingImageUrl={existingFlexy ? existingFlexy.imageUrl : null}
         />
         {errors.image && <p className="error-text">{errors.image}</p>}
       </div>
       
-      <div className="form-group">
-        <label>Flexy Name / Title</label>
-        <input type="text" name="name" value={formData.name} onChange={handleChange} />
-        {errors.name && <p className="error-text">{errors.name}</p>}
-      </div>
-
       <div className="form-group">
         <label>Location (GPS Coordinates)</label>
         <input 
@@ -150,9 +148,13 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
       </div>
       
       <div className="form-group">
-        <label>Address / Landmark</label>
+        <label>Flexy Name / Title (Optional)</label>
+        <input type="text" name="name" value={formData.name} onChange={handleChange} />
+      </div>
+
+      <div className="form-group">
+        <label>Address / Landmark (Optional)</label>
         <textarea name="address" value={formData.address} onChange={handleChange}></textarea>
-        {errors.address && <p className="error-text">{errors.address}</p>}
       </div>
       
       <div className="form-group">
@@ -165,7 +167,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
       </div>
       
       <div className="form-group">
-        <label>Availability Status</label>
+        <label>Availability Status (Optional)</label>
         <select name="status" value={formData.status} onChange={handleChange}>
           <option>Available</option>
           <option>Occupied</option>
@@ -174,22 +176,22 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
       </div>
       
       <div className="form-group">
-        <label>Price / Rent (per month)</label>
+        <label>Price / Rent (per month) (Optional)</label>
         <input type="number" name="price" value={formData.price} onChange={handleChange} />
       </div>
       
       <div className="form-group">
-        <label>Owner Name</label>
+        <label>Owner Name (Optional)</label>
         <input type="text" name="ownerName" value={formData.ownerName} onChange={handleChange} />
       </div>
 
       <div className="form-group">
-        <label>Owner / Agency Contact</label>
+        <label>Owner / Agency Contact (Optional)</label>
         <input type="text" name="ownerContactNumber" value={formData.ownerContactNumber} onChange={handleChange} />
       </div>
       
       <div className="form-group">
-        <label>Notes / Description</label>
+        <label>Notes / Description (Optional)</label>
         <textarea name="notes" value={formData.notes} onChange={handleChange}></textarea>
       </div>
       
