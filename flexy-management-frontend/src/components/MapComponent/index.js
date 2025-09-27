@@ -1,30 +1,45 @@
-import { useCallback, useState, useEffect } from 'react'; // Import useEffect
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api';
+import { useCallback, useState, useEffect, useRef } from 'react';
+import { GoogleMap, useJsApiLoader, DirectionsRenderer } from '@react-google-maps/api';
+import { MarkerClusterer } from '@googlemaps/markerclusterer';
 import LoadingView from '../LoadingView';
 import './index.css';
 
-const MapComponent = ({ onMapClick, markerPosition, center }) => {
+const MapComponent = ({ onMapClick, markers, center, directions }) => {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
-    googleMapsApiKey: "AIzaSyBYoE-nQMz-mzdTdKjyJAVv_F3G5eIq5sM"
+    googleMapsApiKey: "AIzaSyBYoE-nQMz-mzdTdKjyJAVv_F3G5eIq5sM",
+    libraries: ['geometry', 'places'],
   });
 
   const [map, setMap] = useState(null);
+  const clusterer = useRef(null);
 
-  // This hook runs when the map instance is ready and when the center prop changes.
+  const customMarkerIcon = isLoaded ? {
+    url: 'https://res.cloudinary.com/disrq2eh8/image/upload/v1758967291/placeholder_ww4rii.png',
+    scaledSize: new window.google.maps.Size(40, 40),
+  } : null;
+
   useEffect(() => {
-    if (map && center) {
-      map.panTo(center);
+    if (map && isLoaded) {
+      if (clusterer.current) {
+        clusterer.current.clearMarkers();
+      }
+
+      const mapMarkers = markers.map(marker => new window.google.maps.Marker({
+        position: marker,
+        icon: customMarkerIcon,
+      }));
+
+      clusterer.current = new MarkerClusterer({ map, markers: mapMarkers });
     }
-  }, [map, center]); // Re-run this effect if map or center changes
+  }, [map, markers, isLoaded, customMarkerIcon]);
 
   const onLoad = useCallback(function callback(map) {
-    // Set the initial bounds when the map first loads
     const bounds = new window.google.maps.LatLngBounds(center);
     map.fitBounds(bounds);
-    map.setZoom(14); // A closer zoom level
+    map.setZoom(14);
     setMap(map);
-  }, [center]); // Depend on the initial center
+  }, [center]);
 
   const onUnmount = useCallback(function callback(map) {
     setMap(null);
@@ -36,7 +51,6 @@ const MapComponent = ({ onMapClick, markerPosition, center }) => {
 
   return (
     <div className="map-container-inner">
-      <h3>Click on the Map to Pin a Location</h3>
       <GoogleMap
         mapContainerClassName="map-google-container"
         center={center}
@@ -45,7 +59,7 @@ const MapComponent = ({ onMapClick, markerPosition, center }) => {
         onUnmount={onUnmount}
         onClick={onMapClick}
       >
-        {markerPosition && <Marker position={markerPosition} />}
+        {directions && <DirectionsRenderer directions={directions} />}
       </GoogleMap>
     </div>
   );

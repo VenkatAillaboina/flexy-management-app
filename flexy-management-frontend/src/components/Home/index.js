@@ -56,7 +56,7 @@ const Home = () => {
     <div className="home-container">
       <MapComponent
         onMapClick={handleMapClick}
-        markerPosition={markerPosition}
+        markers={markerPosition ? [markerPosition] : []}
         center={currentCenter}
       />
       <FlexyForm pinnedLocation={markerPosition} />

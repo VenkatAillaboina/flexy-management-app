@@ -59,7 +59,7 @@ const NoteDetails = () => {
     return (
       <div className="note-details-container">
         <MapComponent
-          markerPosition={mapCenter}
+          markers={mapCenter ? [mapCenter] : []}
           center={mapCenter}
         />
         <FlexyForm existingFlexy={flexy} pinnedLocation={mapCenter} />

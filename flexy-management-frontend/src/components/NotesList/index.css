@@ -1,83 +1,83 @@
-.notes-list-container {
-  width: 90%;
-  margin: 20px auto;
-  padding: 20px;
-}
-
-.notes-cards-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 20px;
-}
-
-.note-card {
-  background-color: #fff;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+/* components/NotesList/index.css */
+.notes-container {
   display: flex;
-  flex-direction: column;
-  transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.note-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 12px rgba(0,0,0,0.15);
-}
-
-.note-card-image {
+  flex-direction: row;
   width: 100%;
-  height: 200px;
-  object-fit: cover;
+  height: calc(100vh - 80px); /* Adjust based on your navbar height */
 }
 
-.note-card-content {
-  padding: 15px;
+.left-panel {
+  flex: 0 0 65%;
+  padding: 20px;
   display: flex;
   flex-direction: column;
-  flex-grow: 1;
 }
 
-.note-card-content h3 {
-  margin-top: 0;
-  color: #007bff; /* Changed from #146a78 */
+.right-panel {
+  flex: 0 0 35%;
+  padding: 20px;
+  overflow-y: auto;
+  border-left: 1px solid #ddd;
 }
 
-.card-actions {
-  margin-top: auto;
+.map-title {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+}
+
+.search-container {
+  margin-bottom: 20px;
   display: flex;
-  justify-content: space-between;
+  gap: 10px;
   align-items: center;
 }
 
-.details-link, .delete-btn {
-  padding: 8px 12px;
-  text-decoration: none;
+.search-container input {
+  flex-grow: 1;
+  padding: 10px;
+  border: 1px solid #ccc;
   border-radius: 4px;
+  font-size: 1rem;
+}
+
+.search-container button {
+  padding: 10px 15px;
   border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  font-size: 1rem;
 }
 
-.details-link {
-  background-color: #007bff; /* Changed from #58879d */
-  color: white;
+.search-container button:hover {
+  background-color: #0056b3;
 }
 
-.details-link:hover {
-  background-color: #0056b3; /* Darker shade of the new blue */
+.clear-btn {
+  background-color: #6c757d;
 }
 
-.delete-btn {
-  background-color: #ff7f50;
-  color: white;
+.clear-btn:hover {
+  background-color: #5a6268;
 }
 
-.delete-btn:hover {
-  background-color: #cc6540;
+.notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-.delete-btn:disabled {
-  background-color: #a0a0a0;
-  cursor: not-allowed;
+.note-item {
+  border: 1px solid #eee;
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  background-color: #fff;
+}
+
+.note-item h3 {
+  margin-top: 0;
+  color: #007bff;
 }
