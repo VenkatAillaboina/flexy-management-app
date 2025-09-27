@@ -16,7 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/view-all-flexy" element={<NotesList />} />
-          <Route path="/notes/:id" element={<NoteDetails />} />
+          <Route path="/edit-flexy/:id" element={<NoteDetails />} />
           <Route path="/route-finder" element={<FlexyRouteFinder />} />
           <Route path="/contact" element={<ContactForm />} /> 
             <Route path="*" element={<NotFound />} />

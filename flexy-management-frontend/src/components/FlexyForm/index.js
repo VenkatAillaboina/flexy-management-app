@@ -15,6 +15,14 @@ const STATUS = {
   FAILURE: 'failure',
 };
 
+const CONSULTATION_STATUS = {
+  PENDING: 'PENDING',
+  IN_PROGRESS: 'IN_PROGRESS',
+  CONSULTED: 'CONSULTED',
+  NOT_INTERESTED: 'NOT_INTERESTED',
+  UNREACHABLE: 'UNREACHABLE',
+};
+
 const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -24,6 +32,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     height: '',
     price: '',
     status: 'Available',
+    consultationStatus: CONSULTATION_STATUS.PENDING,
     ownerContactNumber: '',
     ownerName: '',
     notes: '',
@@ -41,6 +50,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
         height: existingFlexy.height || '',
         price: existingFlexy.price || '',
         status: existingFlexy.status || 'Available',
+        consultationStatus: existingFlexy.consultationStatus || CONSULTATION_STATUS.PENDING,
         ownerContactNumber: existingFlexy.ownerContactNumber || '',
         ownerName: existingFlexy.ownerName || '',
         notes: existingFlexy.notes || '',
@@ -62,9 +72,14 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     setFormData((prev) => ({...prev, image: null, imageUrl: null }));
   };
 
+  // --- New Cancel Handler ---
+  const handleCancel = () => {
+    navigate('/view-all-flexy');
+  };
+
   const validateForm = () => {
     const newErrors = {};
-    if (!pinnedLocation) newErrors.location = 'A location must be pinned on the map.';
+    if (!pinnedLocation && !existingFlexy) newErrors.location = 'A location must be pinned on the map.';
     if (!formData.image && !existingFlexy) newErrors.image = 'An image is required.';
     
     setErrors(newErrors);
@@ -125,6 +140,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
     <form className="flexy-form" onSubmit={handleSubmit} noValidate>
       <h2>{existingFlexy ? 'Edit Flexy Details' : 'Add New Flexy'}</h2>
       
+      {/* Form groups remain the same... */}
       <div className="form-group">
         <label>Upload Picture</label>
         <ImageUpload
@@ -140,7 +156,7 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
         <input 
           type="text" 
           name="location" 
-          value={pinnedLocation ? `${pinnedLocation.lat.toFixed(6)}, ${pinnedLocation.lng.toFixed(6)}` : ''} 
+          value={pinnedLocation ? `${pinnedLocation.lat.toFixed(6)}, ${pinnedLocation.lng.toFixed(6)}` : (existingFlexy?.location?.coordinates ? `${existingFlexy.location.coordinates[1]}, ${existingFlexy.location.coordinates[0]}` : '')} 
           readOnly 
           placeholder="Click map to select location"
         />
@@ -174,6 +190,15 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
           <option>Reserved</option>
         </select>
       </div>
+
+      <div className="form-group">
+        <label>Consultation Status (Optional)</label>
+        <select name="consultationStatus" value={formData.consultationStatus} onChange={handleChange}>
+          {Object.values(CONSULTATION_STATUS).map(status => (
+            <option key={status} value={status}>{status.replace('_', ' ')}</option>
+          ))}
+        </select>
+      </div>
       
       <div className="form-group">
         <label>Price / Rent (per month) (Optional)</label>
@@ -195,9 +220,15 @@ const FlexyForm = ({ existingFlexy, pinnedLocation }) => {
         <textarea name="notes" value={formData.notes} onChange={handleChange}></textarea>
       </div>
       
-      <button type="submit" className="submit-btn" disabled={submitStatus === STATUS.LOADING}>
-        {submitStatus === STATUS.LOADING ? 'Submitting...' : (existingFlexy ? 'Update Flexy' : 'Add Flexy')}
-      </button>
+      {/* --- Updated Button Container --- */}
+      <div className="form-actions">
+        <button type="submit" className="submit-btn" disabled={submitStatus === STATUS.LOADING}>
+          {submitStatus === STATUS.LOADING ? 'Submitting...' : (existingFlexy ? 'Update Flexy' : 'Add Flexy')}
+        </button>
+        <button type="button" className="cancel-btn" onClick={handleCancel}>
+          Cancel
+        </button>
+      </div>
     </form>
   );
 };

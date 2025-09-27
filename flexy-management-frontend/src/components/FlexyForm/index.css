@@ -85,3 +85,41 @@
     max-width: 100%;
   }
 }
+.form-actions {
+  display: flex;
+  gap: 15px; /* Adds space between buttons */
+  margin-top: 20px;
+}
+
+.form-actions button {
+  flex-grow: 1; /* Makes both buttons take up equal space */
+  padding: 12px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.submit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.submit-btn:hover {
+  background-color: #0056b3;
+}
+
+.cancel-btn {
+  background-color: #6c757d;
+  color: white;
+}
+
+.cancel-btn:hover {
+  background-color: #5a6268;
+}
+
+.form-actions button:active {
+  transform: scale(0.98);
+}

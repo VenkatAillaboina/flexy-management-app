@@ -65,8 +65,27 @@ export class HoardingsService {
     }
   }
 
-  async findAll(): Promise<Partial<Hoarding>[]> {
-    return this.hoardingModel.find().select('name imageUrl address status location').exec();
+ async findAll(search?: string, page: number = 1, limit: number = 5): Promise<{ data: Hoarding[], total: number }> {
+    const query = {};
+    if (search) {
+      const searchRegex = { $regex: search, $options: 'i' };
+      query['$or'] = [
+        { name: searchRegex },
+        { ownerName: searchRegex },
+        { address: searchRegex },
+        { status: searchRegex },
+        { consultationStatus: searchRegex },
+      ];
+    }
+
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.hoardingModel.find(query).skip(skip).limit(limit).exec(),
+      this.hoardingModel.countDocuments(query).exec(),
+    ]);
+    
+    return { data, total };
   }
 
   async findOne(id: string): Promise<Hoarding> {

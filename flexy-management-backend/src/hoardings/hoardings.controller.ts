@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, HttpCode, HttpStatus, NotFoundException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, HttpCode, HttpStatus, NotFoundException, Query, DefaultValuePipe, ParseIntPipe } from '@nestjs/common';
 import { HoardingsService } from './hoardings.service';
 import { CreateHoardingDto } from './dto/create-hoarding.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
@@ -28,10 +28,10 @@ export class HoardingsController {
   @HttpCode(HttpStatus.CREATED)
   @UseInterceptors(FileInterceptor('image'))
   @ApiOperation({ summary: 'Create a new hoarding record' })
-  @ApiConsumes('multipart/form-data') 
+  @ApiConsumes('multipart/form-data')
   @ApiBody({
     description: 'Data for the new hoarding, including an image upload',
-    type: CreateHoardingDto, 
+    type: CreateHoardingDto,
   })
   @ApiResponse({ status: 201, description: 'The hoarding was created successfully.' })
   @ApiResponse({ status: 400, description: 'Bad Request. Validation failed.' })
@@ -41,7 +41,7 @@ export class HoardingsController {
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }), // 4MB
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 8 }), // MAX-8MB
           new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
         ],
       }),
@@ -60,8 +60,12 @@ export class HoardingsController {
   @ApiOperation({ summary: 'Retrieve all hoarding records' })
   @ApiResponse({ status: 200, description: 'Successfully retrieved all hoardings.' })
 
-  async findAll() {
-    const data = await this.hoardingsService.findAll();
+  async findAll(
+    @Query('search') search?: string,
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page?: number,
+    @Query('limit', new DefaultValuePipe(5), ParseIntPipe) limit?: number,
+  ) {
+    const data = await this.hoardingsService.findAll(search, page, limit);
     return {
       statusCode: HttpStatus.OK,
       message: 'Hoardings retrieved successfully',
@@ -69,7 +73,7 @@ export class HoardingsController {
     };
   }
 
-   @Get(':id')
+  @Get(':id')
   @ApiOperation({ summary: 'Retrieve a hoarding record by ID' })
   @ApiResponse({
     status: 200,
@@ -90,8 +94,8 @@ export class HoardingsController {
   }
 
   @Patch(':id')
-  @UseInterceptors(FileInterceptor('image')) 
-  @ApiConsumes('multipart/form-data') 
+  @UseInterceptors(FileInterceptor('image'))
+  @ApiConsumes('multipart/form-data')
   @ApiOperation({ summary: 'Update a hoarding record by ID' })
   @ApiResponse({
     status: 200,
@@ -102,15 +106,15 @@ export class HoardingsController {
     @Param('id') id: string,
     @Body() updateHoardingDto: UpdateHoardingDto,
     @UploadedFile(
-    new ParseFilePipe({
-      validators: [
-        new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }), // 4MB
-        new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
-      ],
-      fileIsRequired: false,
-    }),
-  )
-  image?: Express.Multer.File,
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 4 }), // 4MB
+          new FileTypeValidator({ fileType: '.(png|jpeg|jpg)' }),
+        ],
+        fileIsRequired: false,
+      }),
+    )
+    image?: Express.Multer.File,
   ): Promise<{
     statusCode: number;
     message: string;

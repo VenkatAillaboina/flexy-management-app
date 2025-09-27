@@ -1,6 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsString, IsNotEmpty, IsNumber, IsArray, IsOptional, ArrayMinSize, ArrayMaxSize } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsArray, IsOptional, ArrayMinSize, ArrayMaxSize, IsEnum } from 'class-validator';
+import { ConsultationStatus } from '../enums/consultation-status.enum';
 
 export class CreateHoardingDto {
   @ApiProperty({ example: 'Main Road Billboard', description: 'The public name or title of the hoarding.' })
@@ -46,6 +47,15 @@ export class CreateHoardingDto {
   @IsOptional()
   status: string;
   
+  @ApiProperty({ 
+    enum: ConsultationStatus, 
+    example: ConsultationStatus.PENDING, 
+    description: 'Consultation status with the owner.' 
+  })
+  @IsEnum(ConsultationStatus)
+  @IsOptional()
+  consultationStatus: ConsultationStatus;
+
   @ApiProperty({ example:'+91 1234567890', description: 'Contact Info of the Owner.' })
   @IsString()
   @IsOptional()
@@ -55,10 +65,7 @@ export class CreateHoardingDto {
   @IsString()
   @IsOptional()
   ownerName?: string;
-  
 
-  // We'll handle image upload separately, so the URL will be set by the service
-  // For now, we don't need it in the initial DTO from the client.
   @ApiProperty({ example: 'The Hoarding is near the Mall', description: 'The description of surroundings of hoarding and other Meta Data.' })
   @IsString()
   @IsOptional()

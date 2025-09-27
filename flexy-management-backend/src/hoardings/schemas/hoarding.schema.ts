@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Document } from 'mongoose';
 import { GeoJsonType } from '../dto/geojson-type.enum';
+import { ConsultationStatus } from '../enums/consultation-status.enum';
 
 @Schema({ _id: false })
 class Location {
@@ -14,7 +15,7 @@ class Location {
 @Schema({ timestamps: true })
 export class Hoarding extends Document {
   @Prop()
-  name: string
+  name: string;
 
   @Prop()
   address: string;
@@ -30,6 +31,13 @@ export class Hoarding extends Document {
 
   @Prop({ default: 'Unavailable' })
   status: string;
+
+  @Prop({ 
+    type: String, 
+    enum: Object.values(ConsultationStatus), 
+    default: ConsultationStatus.PENDING 
+  })
+  consultationStatus: ConsultationStatus;
 
   @Prop()
   price: number;
